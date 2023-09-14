@@ -1,6 +1,6 @@
 import { ArrowLeft, ArrowRight } from '@posthog/icons'
 import { StaticImage } from 'gatsby-plugin-image'
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Link from 'components/Link'
 import { CardItemInterface, CardItemType } from 'types'
 
@@ -231,7 +231,22 @@ const Card = ({ top, bottom, Image, ImageSize, color }: CardItemInterface) => {
 
 export default function NoHatingAllowed() {
     const listRef = useRef<HTMLUListElement>(null)
+    const [currentIndex, setCurrentIndex] = useState(0)
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const nextIndex = (currentIndex + 1) % cards.length
+            setCurrentIndex(nextIndex)
+            listRef?.current?.scrollTo({
+                left: nextIndex * 300,
+                behavior: 'smooth',
+            })
+        }, 5000)
+
+        return () => {
+            clearInterval(interval)
+        }
+    }, [currentIndex])
     return (
         <div className="relative pt-8 mb-12 overflow-hidden">
             <h2 className="text-4xl lg:text-6xl text-center mb-5">
